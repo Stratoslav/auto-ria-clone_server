@@ -22,6 +22,9 @@ if ($method === "GET") {
     } else if (isset($_GET['from']) && isset($_GET['to'])) {
 
         selectCarByYear($connection, $_GET);
+    } else if (isset($_GET['low']) && isset($_GET['big'])) {
+
+        selectCarByPrice($connection, $_GET);
     } else if (isset($_GET['search'])) {
 
         filterCar($connection, $_GET);
@@ -31,8 +34,11 @@ if ($method === "GET") {
     } else if ($query === 'cars/get_images/' . $car_id) {
 
         getCarImages($connection, $car_id);
-    } else if ($query === "cars/" . $id) {
+    } else if ($query === "cars/details/" . $car_id) {
 
+        getCarDescription($connection, $car_id);
+    } else if ($query === "cars/" . $id) {
+        // getCarDescription($connection, $id);
         getOneCar($connection, $id);
     }
 }
@@ -44,6 +50,9 @@ if ($method === "POST") {
     } else if ($query === "cars/post_image/" . $car_id) {
 
         addImageToCar($connection, $car_id, $_FILES['image']);
+    } else if ($query === "cars/add/" . $car_id) {
+
+        addMoreFunctional($connection, $_POST, $car_id);
     }
 }
 if ($method === "PATCH") {

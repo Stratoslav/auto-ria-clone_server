@@ -15,10 +15,10 @@ function getCars($connection)
 }
 
 function getOneCar($connection, $id)
-{   
+{
     $car = mysqli_query($connection, "SELECT * FROM  `auto_details` WHERE `id` = $id");
-  
-  
+
+
     $numRows = mysqli_num_rows($car);
     if ($numRows === 0) {
         http_response_code(404);
@@ -77,6 +77,23 @@ function selectCarByYear($connection, $data)
     echo json_encode($selectedList);
 }
 
+function selectCarByPrice($connection, $data)
+{
+    $from = htmlspecialchars(intval($data['low']));
+    $to = htmlspecialchars(intval($data['big']));
+
+    $stmt = mysqli_prepare($connection, "SELECT * FROM `auto_details` WHERE `price` >= ? AND `price` <= ?");
+    mysqli_stmt_bind_param($stmt, "ss", $from, $to);
+    mysqli_stmt_execute($stmt);
+    $selected = mysqli_stmt_get_result($stmt);
+
+    $selectedList = [];
+    while ($select = mysqli_fetch_assoc($selected)) {
+        $selectedList[] = $select;
+    }
+    echo json_encode($selectedList);
+}
+
 
 function getFilterCarFromTo($connection, $data)
 {
@@ -119,4 +136,26 @@ function getCarImages($connection, $id)
         $imageList[] = $image;
     }
     echo json_encode($imageList);
+}
+
+function getCarDescription($connection, $id)
+{
+    $id = intval($id);
+    $stmt = mysqli_prepare($connection, "SELECT * FROM `auto_fynctionalitty` WHERE `auto_id` = ?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    $carDescr = mysqli_stmt_get_result($stmt);
+
+
+    $numRows = mysqli_num_rows($carDescr);
+    if ($numRows === 0) {
+        http_response_code(404);
+        $res = [
+            "Message" => "no such car"
+        ];
+        echo json_encode($res);
+    }
+
+    $car = mysqli_fetch_assoc($carDescr);
+    echo json_encode($car);
 }

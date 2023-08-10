@@ -12,6 +12,7 @@ function createCar($connection, $data, $image)
     $price = htmlspecialchars($data['price']);
     $phone = htmlspecialchars(intval($data['phone']));
 
+
     if ($image['name'] !== "") {
 
         $file_name = strtolower($_FILES["image"]["name"]);
@@ -120,4 +121,40 @@ function addImageToCar($connection, $car_id, $image)
     }
 
     echo json_encode($res);
+}
+
+function addMoreFunctional($connection, $data, $car_id)
+{
+    echo var_dump($car_id);
+    $id = intval($car_id);
+    $engine_power = intval($data['engine_power']);
+    $engine_type = htmlspecialchars($data['engine_type']);
+    $fuel_use_race = intval($data['fuel_use_race']);
+    $fuel_use_city = intval($data['fuel_use_city']);
+    $fuel_use_average = intval($data['fuel_use_average']);
+    $hp = intval($data['hp']);
+    $transmittion = htmlspecialchars($data['transmittion']);
+    $descr = htmlspecialchars($data['descr']);
+    $drive_unit = htmlspecialchars($data['drive_unit']);
+
+    $stmt = mysqli_prepare($connection, "INSERT INTO `auto_fynctionalitty` (`id`, `auto_id`, `engine_power`, `hp`, `engine_type`, `fuel_use_race`, `fuel_use_city`, `fuel_use_average`, `transmittion`, `drive_unit`, `descr`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+    mysqli_stmt_bind_param($stmt, "iiisiiisss", $id, $engine_power, $hp, $engine_type, $fuel_use_race, $fuel_use_city, $fuel_use_average, $transmittion, $drive_unit, $descr);
+    mysqli_stmt_execute($stmt);
+    $newData = mysqli_stmt_get_result($stmt);
+
+    if ($newData) {
+        http_response_code(201);
+        $res = [
+            "status" => true,
+            "post_id" => mysqli_insert_id($connection),
+        ];
+        echo json_encode($res);
+    } else {
+        http_response_code(500);
+        $res = [
+            "status" => false,
+            "error" => mysqli_error($connection),
+        ];
+        echo json_encode($res);
+    }
 }
