@@ -4,7 +4,7 @@ require_once "./server/connection.php";
 require_once "./getFunctions.php";
 require_once "./patchFunctions.php";
 require_once "./postFunctions.php";
-
+require_once "./user/register.php";
 
 
 $query = $_GET['q'];
@@ -44,7 +44,9 @@ if ($method === "GET") {
 }
 
 if ($method === "POST") {
-    if ($query === "cars") {
+    if ($query === "signin") {
+        createUser($_POST, $connection);
+    } else if ($query === "cars") {
 
         createCar($connection, $_POST, $_FILES['image']);
     } else if ($query === "cars/post_image/" . $car_id) {

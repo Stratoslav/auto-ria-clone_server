@@ -3,9 +3,7 @@
 function getCars($connection)
 {
 
-
     $cars = mysqli_query($connection, "SELECT * FROM `auto_details`");
-
     $carList = [];
 
     while ($car = mysqli_fetch_assoc($cars)) {
@@ -17,7 +15,6 @@ function getCars($connection)
 function getOneCar($connection, $id)
 {
     $car = mysqli_query($connection, "SELECT * FROM  `auto_details` WHERE `id` = $id");
-
 
     $numRows = mysqli_num_rows($car);
     if ($numRows === 0) {
@@ -31,8 +28,6 @@ function getOneCar($connection, $id)
     $car = mysqli_fetch_assoc($car);
     echo json_encode($car);
 }
-
-
 
 
 function filterCar($connection, $value)
@@ -64,7 +59,15 @@ function selectCarByYear($connection, $data)
 {
     $from = $data['from'];
     $to = $data['to'];
-
+    if (empty($from) || empty($to)) {
+        http_response_code(400);
+        $res = [
+            "status" => false,
+            "message" => "You need to fill in the input",
+        ];
+        echo json_encode($res);
+        return;
+    }
     $stmt = mysqli_prepare($connection, "SELECT * FROM `auto_details` WHERE `year` >= ? AND `year` <= ?");
     mysqli_stmt_bind_param($stmt, "ss", $from, $to);
     mysqli_stmt_execute($stmt);
@@ -82,6 +85,15 @@ function selectCarByPrice($connection, $data)
     $from = htmlspecialchars(intval($data['low']));
     $to = htmlspecialchars(intval($data['big']));
 
+    if (empty($from) || empty($to)) {
+        http_response_code(400);
+        $res = [
+            "status" => false,
+            "message" => "Price must be more than 0$",
+        ];
+        echo json_encode($res);
+        return;
+    }
     $stmt = mysqli_prepare($connection, "SELECT * FROM `auto_details` WHERE `price` >= ? AND `price` <= ?");
     mysqli_stmt_bind_param($stmt, "ss", $from, $to);
     mysqli_stmt_execute($stmt);
