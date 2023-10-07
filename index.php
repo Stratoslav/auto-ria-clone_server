@@ -38,7 +38,7 @@ if ($method === "GET") {
 
         getCarDescription($connection, $car_id);
     } else if ($query === "cars/" . $id) {
-        // getCarDescription($connection, $id);
+        
         getOneCar($connection, $id);
     }
 }
@@ -46,6 +46,10 @@ if ($method === "GET") {
 if ($method === "POST") {
     if ($query === "signin") {
         createUser($_POST, $connection);
+       }   else if($query === "login"){
+  
+        login($connection, $_POST);
+    }
     } else if ($query === "cars") {
 
         createCar($connection, $_POST, $_FILES['image']);
@@ -55,7 +59,7 @@ if ($method === "POST") {
     } else if ($query === "cars/add/" . $car_id) {
 
         addMoreFunctional($connection, $_POST, $car_id);
-    }
+    
 }
 if ($method === "PATCH") {
     if ($query === "cars/" . $id) {

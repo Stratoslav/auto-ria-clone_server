@@ -1,6 +1,6 @@
 <?php
 
-$connection = mysqli_connect('localhost', "root", "", "auto", "3306");
+$connection = mysqli_connect('localhost', "root", "", "autoria", "3306");
 
 if (mysqli_errno($connection)) {
     printf("Connect failed: %s\n", mysqli_connect_error());
