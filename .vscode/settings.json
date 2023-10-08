@@ -1,3 +1,22 @@
 {
-    "html.format.templating": true
+    "html.format.templating": true,
+
+    "breadcrumbs.enabled": true,
+	"phpcs.enable": true,
+	"phpcs.showSources": true,
+	"phpcs.executablePath": "/usr/local/bin/phpcs",
+	"phpcs.autoConfigSearch": true,
+	"phpcs.ignorePatterns": [
+		"*/vendor/*",
+		"*/vendors/*",
+	],
+	"phpcbf.enable": true,
+	"phpcbf.documentFormattingProvider": true,
+	"phpcbf.debug": true,
+	"phpcbf.executablePath": "/usr/local/bin/phpcbf",
+	"phpcbf.onsave": false,
+	"php.suggest.basic": true,
+	"php.validate.executablePath": "/usr/bin/php",
+	"php.validate.run": "onSave",
+	"editor.minimap.enabled": false
 }
