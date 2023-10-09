@@ -2,13 +2,15 @@
 
 require_once "./config.php";
 require_once "./headers.php";
-require_once "./server/connection.php";
-require_once "./getFunctions.php";
-require_once "./patchFunctions.php";
-require_once "./postFunctions.php";
 require_once "./model/DataBase.php";
 require_once "./model/AuthModel.php";
+require_once "./model/CarsModel.php";
+require_once "./model/CarsModel.post.php";
+require_once "./model/CarsModel.patch.php";
 require_once "./controller/AuthController.php";
+require_once "./controller/CarsController.php";
+require_once "./controller/CarsController.post.php";
+require_once "./controller/CarsController.patch.php";
 
 $query = $_GET['q'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -16,14 +18,27 @@ $params = explode("/", $query);
 $type = $params[0];
 $id = $params[1];
 $car_id = $params[2];
-
-
+$carsController = new CarsController();
+$carsPostController = new CarsPostController();
+$carsPatchController = new CarsPatchController();
 switch ($method) {
     case 'GET':
-        // switch($query){
-        //     case "cars":
 
+        // switch ($query) {
+        //     case "cars":
+        //         getCars($connection);
+        //         break;
+        //     case 'cars/get_images/' . $car_id:
+        //         getCarImages($connection, $car_id);
+        //         break;
+        //     case "cars/details/" . $car_id:
+        //         getCarDescription($connection, $car_id);
+        //         break;
+        //     case "cars/" . $id;
+        //         getOneCar($connection, $id);
+        //         break;
         // }
+
         break;
     case "POST":
         switch ($query) {
@@ -36,13 +51,14 @@ switch ($method) {
                 $controller->login($_POST);
                 break;
             case 'cars':
-                createCar($connection, $_POST, $_FILES['image']);
+                $carsPostController->createCar($_POST, $_FILES['image']);
                 break;
             case "cars/post_image/" . $car_id:
-                addImageToCar($connection, $car_id, $_FILES['image']);
+                $carsPostController->addImageToCar($car_id, $_FILES['image']);
                 break;
             case "cars/add/" . $car_id:
-                addMoreFunctional($connection, $_POST, $car_id);
+                $carsPostController->addMoreFunctional($_POST, $car_id);
+
                 break;
             default:
                 echo "not found";
@@ -56,7 +72,7 @@ switch ($method) {
 
                 $data = json_decode($data, true);
 
-                updateCar($connection, $data, $id);
+                $carsPatchController->updateCar($data, $id);
                 break;
         }
         break;
@@ -68,57 +84,28 @@ switch ($method) {
 if ($method === "GET") {
     if ($query === "cars") {
 
-        getCars($connection);
-    } else if (isset($_GET['from']) && isset($_GET['to'])) {
+        $carsController->getCars();
+    } else
+    if (isset($_GET['from']) && isset($_GET['to'])) {
 
-        selectCarByYear($connection, $_GET);
+        $carsController->selectCarByYear($_GET);
     } else if (isset($_GET['low']) && isset($_GET['big'])) {
 
-        selectCarByPrice($connection, $_GET);
+        $carsController->selectCarByPrice($_GET);
     } else if (isset($_GET['search'])) {
 
-        filterCar($connection, $_GET);
+        $carsController->filterCar($_GET);
     } else if (isset($_GET['like'])) {
 
-        getFilterCarFromTo($connection, $_GET);
+        $carsController->getFilterCarFromTo($_GET);
     } else if ($query === 'cars/get_images/' . $car_id) {
 
-        getCarImages($connection, $car_id);
+        $carsController->getCarImages($car_id);
     } else if ($query === "cars/details/" . $car_id) {
 
-        getCarDescription($connection, $car_id);
+        $carsController->getCarDescription($car_id);
     } else if ($query === "cars/" . $id) {
 
-        getOneCar($connection, $id);
+        $carsController->getOneCar($id);
     }
 }
-
-// if ($method === "POST") {
-//     if ($query === "signin") {
-//           $controller = new AuthController();
-//         $controller->register($_POST);
-//        }   else if($query === "login"){
-//         $controller = new AuthController();
-//         $controller->login($_POST);
-
-//     }
-//     } else if ($query === "cars") {
-
-//         createCar($connection, $_POST, $_FILES['image']);
-//     } else if ($query === "cars/post_image/" . $car_id) {
-
-//         addImageToCar($connection, $car_id, $_FILES['image']);
-//     } else if ($query === "cars/add/" . $car_id) {
-
-//         addMoreFunctional($connection, $_POST, $car_id);
-
-// }
-// if ($method === "PATCH") {
-//     if ($query === "cars/" . $id) {
-//         $data = file_get_contents('php://input');
-
-//         $data = json_decode($data, true);
-
-//         updateCar($connection, $data, $id);
-//     }
-// }
